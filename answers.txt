@@ -1,0 +1,111 @@
+Question 1:
+Using the grammar below, show a parse tree and a leftmost derivation for the following 
+statement: 
+A = B * (C * (A + B)) 
+ 
+Grammar: 
+Statement → Assignment | Expression 
+Assignment → Identifier = Expression 
+Expression → Expression + Term | Term 
+Term → Term * Factor | Factor 
+Factor → ( Expression ) | Identifier 
+Identifier → A | B | C
+
+
+1a. Parse Tree:
+Statement
+  |__Assignment
+     |_ Identifier(A)
+     |_ =
+     |_ Expression
+        |_ Term
+            |_ Term
+            |    |_ Factor
+            |    |     |_ Identifier(B)
+            |    |_ *
+            |    |_ Factor
+            |         |_ ( Expression )
+            |              |_ (
+            |              |_ Expression
+            |                   |_ Term
+            |                        |_ Term
+            |                        |    |_ Factor
+            |                        |         |_ Identifier(C)
+            |                        |_ *
+            |                        |_ Factor
+            |                             |_ ( Expression )
+            |                                  |_ (
+            |                                  |_ Expression
+            |                                  |    |_ Expression
+            |                                  |    |    |_ Term
+            |                                  |    |         |_ Factor
+            |                                  |    |              |_ Identifier(A)
+            |                                  |    |_ +
+            |                                  |    |_ Term
+            |                                  |         |_ Factor
+            |                                  |              |_ Identifier(B)
+            |                                  |_ )
+            |_ )
+
+
+1b. Leftmost Derivation:
+Statement
+Assignment
+Identifier = Expression
+A = Expression
+A = Term
+A = Term * Factor
+A = Term * ( Expression )
+A = Term * ( Term )
+A = Term * ( Term * Factor )
+A = Term * ( Term * ( Expression ) )
+A = Term * ( Term * ( Expression + Term ) )
+A = Term * ( Term * ( Term + Term ) )
+A = Term * ( Term * ( Factor + Term ) )
+A = Term * ( Term * ( Identifier + Term ) )
+A = Term * ( Term * ( A + Term ) )
+A = Term * ( Term * ( A + Factor ) )
+A = Term * ( Term * ( A + Identifier ) )
+A = Term * ( Term * ( A + B ) )
+A = Term * ( Factor * ( A + B ) )
+A = Term * ( Identifier * ( A + B ) )
+A = Term * ( C * ( A + B ) )
+A = Factor * ( C * ( A + B ) )
+A = Identifier * ( C * ( A + B ) )
+A = B * ( C * ( A + B ) )
+
+
+2. Question 2:
+int u = 42;  
+int v = 69; 
+int w = 17; 
+ 
+proc add( z:int ) 
+  u := v + u + z; 
+ 
+proc bar( fun:proc ) 
+  int u := w; 
+  fun(v); 
+ 
+proc foo( x:int, w:int ) 
+  int v := x; 
+  bar(add); 
+ 
+main 
+  foo(u, 13); 
+  print(u); 
+end; 
+ 
+
+a. Using Static Scope, what is printed to the screen?
+180
+
+b. Using Dynamic Scope with Deep Binding, what is printed to the screen?
+Hint: The sum for u is 126, but due to deep binding, it's foo's local v that gets involved
+126
+
+c. Using Dynamic Scope with Shallow Binding, what is printed to the screen?
+Hint: The sum for u is 101, but again it's foo's local v that matter.
+153
+
+
