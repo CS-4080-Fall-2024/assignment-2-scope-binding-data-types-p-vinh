@@ -98,14 +98,80 @@ end;
  
 
 a. Using Static Scope, what is printed to the screen?
+Doesn't look down the stack, so it's the global variables that gets involved.
+
+add
+v = 69
+u = 42
+z = 69
+u = 69 + 42 + 69
+
+bar
+v = 69
+u = 42
+
+foo
+v = 42
+u = 42
+w = 17
+x = 42
+bar(add(v))
+
+main
+u = 42
+v = 69
+w = 17
+
 180
 
 b. Using Dynamic Scope with Deep Binding, what is printed to the screen?
 Hint: The sum for u is 126, but due to deep binding, it's foo's local v that gets involved
+
+add
+u = 42
+v = 42
+z = 42
+u = 42 + 42 + 42
+
+bar
+v = 42
+u = 42
+bar(add(v))
+
+foo
+w = 13
+v = 42
+u = 42
+
+
+main
+u = 42
+v = 69
+w = 17
+x = 42
+
 126
 
 c. Using Dynamic Scope with Shallow Binding, what is printed to the screen?
 Hint: The sum for u is 101, but again it's foo's local v that matter.
-153
+Retain the binding when the function is called.
+
+bar
+v = 42
+u = 17
+u = 42 + 17 + 42
+
+foo(u, 13)
+v = 42
+u = 42
+w = 17
+
+main 
+u = 42
+v = 69
+w = 17
+x = 42
+
+101
 
 
