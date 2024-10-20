@@ -37,6 +37,12 @@ class RubiksCube:
             Rotate a given face of the Rubik's Cube 90 degrees clockwise.
         """
         return [list(row) for row in zip(*face[::-1])]
+    
+    def rotate_face_ccw(self, face):
+        """
+            Rotate a given face of the Rubik's Cube 90 degrees counter clockwise.
+        """
+        return [list(row) for row in zip(*face)][::-1]
 
     def rotate_front(self, direction): 
         """
@@ -44,7 +50,7 @@ class RubiksCube:
         """ 
         
         # Rotate the front face 
-        self.faces['F'] = self.rotate_face(self.faces['F']) if direction == "F" else self.rotate_face(self.rotate_face(self.rotate_face(self.faces['F'])))
+        self.faces['F'] = self.rotate_face(self.faces['F']) if direction == "F" else self.rotate_face_ccw(self.faces['F'])
         
         # Get the adjacent edges 
         top_row = self.faces['U'][self.size - 1][:]
@@ -71,7 +77,7 @@ class RubiksCube:
             Rotate the back face CW/CCW and update the adjacent faces accordingly.
         """ 
         # Rotate the back face 
-        self.faces['B'] = self.rotate_face(self.faces['B']) if direction == "B" else self.rotate_face(self.rotate_face(self.rotate_face(self.faces['B'])))
+        self.faces['B'] = self.rotate_face(self.faces['B']) if direction == "B" else self.rotate_face_ccw(self.faces['B'])
         
         # Get the adjacent edges 
         top_row = self.faces['U'][0][:]
@@ -98,7 +104,7 @@ class RubiksCube:
             Rotate the up face and the adjacent faces accordingly.
         """ 
         # Rotate the up face 
-        self.faces['U'] = self.rotate_face(self.faces['U']) if direction == "U" else self.rotate_face(self.rotate_face(self.rotate_face(self.faces['U'])))
+        self.faces['U'] = self.rotate_face(self.faces['U']) if direction == "U" else self.rotate_face_ccw(self.faces['U'])
         
         # Get the adjacent faces
         front_row = self.faces['F'][0][:]
@@ -122,7 +128,7 @@ class RubiksCube:
         """Rotate the down face and the adjacent faces accordingly.""" 
         
         # Rotate the down face 
-        self.faces['D'] = self.rotate_face(self.faces['D']) if direction == "D" else self.rotate_face(self.rotate_face(self.rotate_face(self.faces['D'])))
+        self.faces['D'] = self.rotate_face(self.faces['D']) if direction == "D" else self.rotate_face_ccw(self.faces['D'])
         
         # Get the adjacent faces
         front_row = self.faces['F'][self.size - 1][:]
@@ -145,7 +151,7 @@ class RubiksCube:
     def rotate_left(self, direction):
         """Rotate the left face and the adjacent faces accordingly.""" 
         # Rotate the left face 
-        self.faces['L'] = self.rotate_face(self.faces['L']) if direction == "L" else self.rotate_face(self.rotate_face(self.rotate_face(self.faces['L'])))
+        self.faces['L'] = self.rotate_face(self.faces['L']) if direction == "L" else self.rotate_face_ccw(self.faces['L'])
         
         # Get the adjacent edges 
         top_col = [self.faces['U'][i][0] for i in range(self.size)]
@@ -170,7 +176,7 @@ class RubiksCube:
     def rotate_right(self, direction):
         """Rotate the right face and the adjacent faces accordingly."""
         # Rotate the right face 
-        self.faces['R'] = self.rotate_face(self.faces['R']) if direction == "R" else self.rotate_face(self.rotate_face(self.rotate_face(self.faces['R'])))
+        self.faces['R'] = self.rotate_face(self.faces['R']) if direction == "R" else self.rotate_face_ccw(self.faces['R'])
         
         # Get the adjacent edges 
         top_col = [self.faces['U'][i][self.size - 1] for i in range(self.size)]
