@@ -2,7 +2,7 @@
 
 import numpy as np
 import copy
-
+import time
 
 class RubiksCube:
     def __init__(self, size):
@@ -92,10 +92,10 @@ class RubiksCube:
         
         # Update the adjacent faces
         for i in range(self.size):
-            self.faces['F'][0][i] = right_row[self.size - 1 - i]
+            self.faces['F'][0][i] = right_row[i]
             self.faces['L'][0][i] = front_row[i]
-            self.faces['B'][0][i] = left_row[self.size - 1 - i]
-            self.faces['R'][0][i] = back_row[i]
+            self.faces['B'][0][i] = left_row[i]
+            self.faces['R'][0][i] = back_row[i] 
 
     def rotate_down(self):
         """Rotate the down face and the adjacent faces accordingly.""" 
@@ -110,9 +110,9 @@ class RubiksCube:
         
         # Update the adjacent faces
         for i in range(self.size):
-            self.faces['F'][2][i] = left_row[self.size - 1 - i]
+            self.faces['F'][2][i] = left_row[i]
             self.faces['L'][2][i] = back_row[i]
-            self.faces['B'][2][i] = right_row[self.size - 1 - i]
+            self.faces['B'][2][i] = right_row[i]
             self.faces['R'][2][i] = front_row[i]
 
     def rotate_left(self):
@@ -153,6 +153,7 @@ class RubiksCube:
 
     def scramble(self, num_moves, seed=None):
         np.random.seed(seed)
+        moves = []
         
         for _ in range(num_moves):
             move = np.random.choice(['F', 'B', 'U', 'D', 'L', 'R'])
@@ -168,7 +169,6 @@ class RubiksCube:
                 self.rotate_left()
             elif move == 'R':
                 self.rotate_right()
-    
     def isValidCube(self):
         """Check if the cube is valid. A valid cube should have exactly 9 squares of each color."""
         color_counts = {
@@ -206,8 +206,8 @@ class RubiksCube:
             ('D', 1, 0, 'L', 2, 1),
             ('F', 1, 2, 'R', 1, 0),
             ('F', 1, 0, 'L', 1, 2),
-            ('B', 1, 2, 'R', 1, 2),
-            ('B', 1, 0, 'L', 1, 0)
+            ('B', 1, 0, 'R', 1, 2),
+            ('B', 1, 2, 'L', 1, 0)
         ]
         
         for edge in edges:
@@ -216,24 +216,6 @@ class RubiksCube:
                 errors.append(f"Invalid edge between {face1} face at ({row1}, {col1}): Color: {self.faces[face1][row1][col1]} \
                                 and {face2} face at ({row2}, {col2}): Color: {self.faces[face2][row2][col2]}\n")
 
-
-                # Check corners
-        corners = [
-            ('U', 2, 2, 'F', 0, 2, 'R', 0, 0),
-            ('U', 2, 0, 'F', 0, 0, 'L', 0, 2),
-            ('U', 0, 2, 'B', 0, 0, 'R', 0, 2),
-            ('U', 0, 0, 'B', 0, 2, 'L', 0, 0),
-            ('D', 2, 2, 'F', 2, 2, 'R', 2, 0),
-            ('D', 2, 0, 'F', 2, 0, 'L', 2, 2),
-            ('D', 0, 2, 'B', 2, 0, 'R', 2, 2),
-            ('D', 0, 0, 'B', 2, 2, 'L', 2, 0)
-        ]
-        
-        for corner in corners:
-            face1, row1, col1, face2, row2, col2, face3, row3, col3 = corner
-            if not self.is_valid_corner((self.faces[face1][row1][col1], self.faces[face2][row2][col2], self.faces[face3][row3][col3])):
-                errors.append(f"Invalid corner between {face1} face at ({row1}, {col1}), {face2} face at ({row2}, {col2}), and {face3} face at ({row3}, {col3})")
-        
         if errors:
             return False, errors
         return True, []
@@ -248,14 +230,6 @@ class RubiksCube:
         }
         return edge in valid_edges or edge[::-1] in valid_edges
 
-    def is_valid_corner(self, corner):
-        """Check if a corner piece is valid."""
-        valid_corners = {
-            ('W', 'R', 'B'), ('W', 'R', 'G'), ('W', 'O', 'B'), ('W', 'O', 'G'),
-            ('Y', 'R', 'B'), ('Y', 'R', 'G'), ('Y', 'O', 'B'), ('Y', 'O', 'G')
-        }
-        return tuple(corner) in valid_corners
-    
     def generate_map(self):
         """Generate a map of the current state of the Rubik's Cube."""
         size = self.size
@@ -286,7 +260,7 @@ class RubiksCube:
 
 def main():
     cube = RubiksCube(3)
-    cube.rotate_front()
+    cube.scramble(100, int(time.time()))
     print(cube.generate_map())
 
     
