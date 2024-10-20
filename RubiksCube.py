@@ -196,13 +196,86 @@ class RubiksCube:
                 self.faces['D'][i][self.size - 1] = front_col[i]
                 self.faces['B'][i][0] = bottom_col[self.size - 1 - i]
 
+    def rotate_middle(self, layer, axis, direction):
+        """Rotate the middle slice and the adjacent faces accordingly."""
+        # if the layer is 0 or greater than size then use rotate_left or rotate_right
+        if layer <= 0 or layer >= self.size - 1:
+            raise ValueError("Layer must be greater than 0 and less than or equal to the size of the cube.")
 
+        axis = axis.upper()
+        direction = direction.upper()
+        
+        if axis == 'X':
+            self.rotate_layer(layer, 0, direction == "CW")
+        elif axis == 'Y':
+            self.rotate_layer(layer, 1, direction == "CW")
+        elif axis == 'Z':
+            self.rotate_layer(layer, 2, direction == "CW")
+        
+    def rotate_layer(self, layer, axis, clockwise):
+        if axis == 0:  # x-axis
+            # X Orientation we need the columns
+            front_face = [self.faces['F'][i][layer] for i in range(self.size)]
+            back_face = [self.faces['B'][i][layer] for i in range(self.size)]
+            up_face = [self.faces['U'][i][layer] for i in range(self.size)]
+            down_face = [self.faces['D'][i][layer] for i in range(self.size)]
+            
+            if clockwise:
+                for i in range(self.size):
+                    self.faces['U'][i][layer] = back_face[self.size - 1 - i]
+                    self.faces['B'][i][layer] = down_face[self.size - 1 - i]
+                    self.faces['D'][i][layer] = front_face[i]
+                    self.faces['F'][i][layer] = up_face[i]
+            else:
+                for i in range(self.size):
+                    self.faces['U'][i][layer] = front_face[i]
+                    self.faces['F'][i][layer] = down_face[i]
+                    self.faces['D'][i][layer] = back_face[self.size - 1 - i]
+                    self.faces['B'][i][layer] = up_face[self.size - 1 - i]
+        elif axis == 1:  # y-axis
+            left_face = [self.faces['L'][layer][i] for i in range(self.size)]
+            right_face = [self.faces['R'][layer][i] for i in range(self.size)]
+            front_face = [self.faces['F'][layer][i] for i in range(self.size)]
+            back_face = [self.faces['B'][layer][i] for i in range(self.size)]
+            
+            if clockwise:
+                for i in range(self.size):
+                    self.faces['L'][layer][i] = back_face[i]
+                    self.faces['B'][layer][i] = right_face[i]
+                    self.faces['R'][layer][i] = front_face[i]
+                    self.faces['F'][layer][i] = left_face[i]
+            else:
+                for i in range(self.size):
+                    self.faces['L'][layer][i] = front_face[i]
+                    self.faces['F'][layer][i] = right_face[i]
+                    self.faces['R'][layer][i] = back_face[i]
+                    self.faces['B'][layer][i] = left_face[i]
+        elif axis == 2:  # z-axis
+            # Column wise rotation
+            right_face = [self.faces['R'][i][layer] for i in range(self.size)]
+            left_face = [self.faces['L'][i][layer] for i in range(self.size)]
+            up_face = [self.faces['U'][layer][i] for i in range(self.size)]
+            down_face = [self.faces['D'][layer][i] for i in range(self.size)]
+            
+            if clockwise:
+                for i in range(self.size):
+                    self.faces['U'][layer][i] = left_face[self.size - 1 - i]
+                    self.faces['L'][i][layer] = down_face[i]
+                    self.faces['D'][layer][i] = right_face[self.size - 1 - i]
+                    self.faces['R'][i][layer] = up_face[i]
+            else:
+                for i in range(self.size):
+                    self.faces['U'][layer][i] = right_face[i]
+                    self.faces['R'][i][layer] = down_face[self.size - 1 - i]
+                    self.faces['D'][layer][i] = left_face[i]
+                    self.faces['L'][i][layer] = up_face[self.size - 1 - i]
+    
     def scramble(self, num_moves, seed=None):
         np.random.seed(seed)
         moves = []
         
         for _ in range(num_moves):
-            move = np.random.choice(['F', 'B', 'U', 'D', 'L', 'R', 'F\'', 'B\'', 'U\'', 'D\'', 'L\'', 'R\''])
+            move = np.random.choice(['F', 'B', 'U', 'D', 'L', 'R', 'F\'', 'B\'', 'U\'', 'D\'', 'L\'', 'R\'', 'M', 'M\'', 'E', 'E\'', 'S', 'S\''])
             if move == 'F' or move == 'F\'':
                 self.rotate_front(move)
             elif move == 'B' or move == 'B\'':
@@ -215,8 +288,15 @@ class RubiksCube:
                 self.rotate_left(move)
             elif move == 'R' or move == 'R\'':
                 self.rotate_right(move)
+            elif move == 'M' or move == 'M\'':
+                self.rotate_middle(np.random.randint(1, self.size - 1), 'x', 'cw' if move == 'M' else 'ccw')
+            elif move == 'E' or move == 'E\'':
+                self.rotate_middle(np.random.randint(1, self.size - 1), 'y', 'cw' if move == 'E' else 'ccw')
+            elif move == 'S' or move == 'S\'':
+                self.rotate_middle(np.random.randint(1, self.size - 1), 'z', 'cw' if move == 'S' else 'ccw')
+                
             moves.append(move)
-            # print(self.generate_map())
+        print(self.generate_map())
         return moves
                 
     def isValidCube(self):
@@ -311,11 +391,9 @@ class RubiksCube:
         return map_str
 
 def main():
-    cube = RubiksCube(3)
-    moves = cube.scramble(100, int(time.time()))
-    print(moves)
-    print(cube.generate_map())
-    
+    cube = RubiksCube(10)
+    cube.scramble(100, int(time.time()))
+    print("Seed: " + str(int(time.time())))
     
 
     
