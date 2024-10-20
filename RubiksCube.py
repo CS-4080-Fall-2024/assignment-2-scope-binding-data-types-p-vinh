@@ -391,7 +391,7 @@ class RubiksCube:
         return map_str
 
 def main():
-    cube = RubiksCube(10)
+    cube = RubiksCube(3)
     cube.scramble(100, int(time.time()))
     print("Seed: " + str(int(time.time())))
     
