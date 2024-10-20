@@ -83,10 +83,10 @@ class RubiksCube:
         if direction == 'B':
             # Update the adjacent faces
             for i in range(self.size):
-                self.faces['U'][0][i] = right_col[self.size - 1 - i]
-                self.faces['L'][i][0] = top_row[i]
-                self.faces['D'][self.size - 1][i] = left_col[self.size - 1 - i]
-                self.faces['R'][i][self.size - 1] = bottom_row[i]
+                self.faces['U'][0][i] = right_col[i]
+                self.faces['L'][i][0] = top_row[self.size - 1 - i]
+                self.faces['D'][self.size - 1][i] = left_col[i]
+                self.faces['R'][i][self.size - 1] = bottom_row[self.size - 1 - i]
         elif direction == 'B\'':
             # Update the adjacent faces
             for i in range(self.size):
@@ -166,8 +166,8 @@ class RubiksCube:
             # Update the adjacent faces
             for i in range(self.size):
                 self.faces['U'][i][0] = front_col[i]
-                self.faces['F'][i][0] = bottom_col[self.size - 1 - i]
-                self.faces['D'][i][0] = back_col[i]
+                self.faces['F'][i][0] = bottom_col[i]
+                self.faces['D'][i][0] = back_col[self.size - 1 - i]
                 self.faces['B'][i][self.size - 1] = top_col[self.size - 1 - i]
 
     def rotate_right(self, direction):
@@ -216,7 +216,7 @@ class RubiksCube:
             elif move == 'R' or move == 'R\'':
                 self.rotate_right(move)
             moves.append(move)
-            print(self.generate_map())
+            # print(self.generate_map())
         return moves
                 
     def isValidCube(self):
@@ -312,8 +312,9 @@ class RubiksCube:
 
 def main():
     cube = RubiksCube(3)
-    moves = cube.scramble(10)
+    moves = cube.scramble(100, int(time.time()))
     print(moves)
+    print(cube.generate_map())
     
     
 
