@@ -31,6 +31,7 @@ class RubiksCube:
             'B': [['O'] * size for _ in range(size)],  # Back (Orange) 
         } 
         
+
             
     def rotate_face(self, face):
         """
@@ -316,7 +317,32 @@ class RubiksCube:
         print(self.generate_map())
         return moves
     
-    # Helper functions     
+    # Helper functions   
+    
+    def moves(self, dir):
+        """
+            Calls the appropriate rotation function based on the direction.
+        """
+        
+        if dir == 'F' or dir == 'F\'':
+            self.rotate_front(dir)
+        elif dir == 'B' or dir == 'B\'':
+            self.rotate_back(dir)
+        elif dir == 'U' or dir == 'U\'':
+            self.rotate_up(dir)
+        elif dir == 'D' or dir == 'D\'':
+            self.rotate_down(dir)
+        elif dir == 'L' or dir == 'L\'':
+            self.rotate_left(dir)
+        elif dir == 'R' or dir == 'R\'':
+            self.rotate_right(dir)
+        elif dir == 'M' or dir == 'M\'':
+            self.rotate_middle(1, 'x', 'cw' if dir == 'M' else 'ccw')
+        elif dir == 'E' or dir == 'E\'':
+            self.rotate_middle(1, 'y', 'cw' if dir == 'E' else 'ccw')
+        elif dir == 'S' or dir == 'S\'':
+            self.rotate_middle(1, 'z', 'cw' if dir == 'S' else 'ccw')
+              
     def isValidCube(self):
         """Check if the cube is valid. A valid cube should have exactly 9 squares of each color."""
         color_counts = {
